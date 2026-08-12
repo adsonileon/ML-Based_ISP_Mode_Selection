@@ -25,7 +25,7 @@ The proposed solution uses a **Decision Tree** to predict which ISP modes are mo
 By avoiding the RDO evaluation of less promising ISP modes, the proposed approach reduces the computational complexity of the ISP mode decision while maintaining coding efficiency.
 
 <p align="center">
-  <img src="figures/solution.png" alt="Overview of the proposed solution" width="850">
+  <img src="figures/solution.png" alt="Overview of the proposed solution" width="300">
 </p>
 
 <p align="center">
@@ -81,19 +81,19 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 Compile the encoder:
 
 ```bash
-make -j6
+make -j 6
 ```
 
-The `-j6` option instructs `make` to use six parallel compilation processes. If your system has fewer available CPU cores, a smaller value can be used, for example:
+The `-j 6` option instructs `make` to use six parallel compilation processes. If your system has fewer available CPU cores, a smaller value can be used, for example:
 
 ```bash
-make -j4
+make -j 4
 ```
 
 or:
 
 ```bash
-make -j2
+make -j 2
 ```
 
 After compilation, the encoder executable will be available in the `bin` directory.
