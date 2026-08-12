@@ -8,9 +8,9 @@ The proposed solution uses a Decision Tree to predict the most promising Intra S
 
 **Fast ISP Mode Decision for the Versatile Video Coding Intra Prediction Using Machine Learning**
 
-Adson Duarte, Anna Oliveira, Bruno Zatt, Guilherme Corrêa, and Daniel Palomino.
+Larissa Araújo, Adson Duarte, Bruno Zatt, Guilherme Corrêa, and Daniel Palomino.
 
-*Proceedings of the 29th Brazilian Symposium on Multimedia and the Web (WebMedia 2023)*.
+*Proceedings of the 30th Brazilian Symposium on Multimedia and the Web (WebMedia 2024)*.
 
 **Paper:** [SBC OpenLib](https://sol.sbc.org.br/index.php/webmedia/article/view/30309)
 
@@ -156,6 +156,7 @@ If you use this code in your research, please cite the following paper:
     doi = {10.5753/webmedia.2024.241692},
     url = {https://sol.sbc.org.br/index.php/webmedia/article/view/30309}
 }
+
 
 ```
 
