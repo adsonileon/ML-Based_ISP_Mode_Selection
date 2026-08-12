@@ -1,140 +1,164 @@
-VTM reference software for VVC
-==============================
+# Fast ISP Mode Decision for the Versatile Video Coding Intra Prediction Using Machine Learning
 
-This software package is the reference software for Rec. ITU-T H.266 | ISO/IEC 23090-3 Versatile Video Coding (VVC). The reference software includes both encoder and decoder functionality.
+This repository contains the source code of the machine-learning-based solution proposed in the paper **"Fast ISP Mode Decision for the Versatile Video Coding Intra Prediction Using Machine Learning"**.
 
-Reference software is useful in aiding users of a video coding standard to establish and test conformance and interoperability, and to educate users and demonstrate the capabilities of the standard. For these purposes, this software is provided as an aid for the study and implementation of Versatile Video Coding.
+The proposed solution uses a Decision Tree to predict the most promising Intra Subpartition Prediction (ISP) modes during the VVC intra prediction process, reducing the number of modes that need to be fully evaluated by the rate-distortion optimization (RDO) process.
 
-The software has been jointly developed by the ITU-T Video Coding Experts Group (VCEG, Question 6 of ITU-T Study Group 16) and the ISO/IEC Moving Picture Experts Group (MPEG Joint Video Coding Team(s) with ITU-T SG 16, Working Group 5 of Subcommittee 29 of ISO/IEC Joint Technical Committee 1).
+## Associated Publication
 
-A software manual, which contains usage instructions, can be found in the "doc" subdirectory of this software package.
+**Fast ISP Mode Decision for the Versatile Video Coding Intra Prediction Using Machine Learning**
 
-The source code is stored in a Git repository. The most recent version can be retrieved using the following commands:
+Adson Duarte, Anna Oliveira, Bruno Zatt, Guilherme Corrêa, and Daniel Palomino.
+
+*Proceedings of the 29th Brazilian Symposium on Multimedia and the Web (WebMedia 2023)*.
+
+**Paper:** [SBC OpenLib](https://sol.sbc.org.br/index.php/webmedia/article/view/30309)
+
+## Abstract
+
+The Versatile Video Coding (VVC) standard achieves high compression rates by introducing new encoding tools, such as the Intra Subpartition Prediction (ISP). However, the ISP increases the computational effort necessary to perform the mode decision of the intra prediction step. This paper proposes a fast intra-mode decision solution for the ISP using machine learning. A Decision Tree is employed to predict the most promising ISP modes to be optimal to avoid the costly RDO test of ISP modes that are less likely to be chosen. By reducing the number of modes fully evaluated by the RDO process, the proposed solution achieves an average time-saving of 3.15% with only 0.11% of coding efficiency loss when tested for the common test conditions of VVC. Unlike the related works, our solution avoids the time overhead of calculating image features by adopting features from the encoding process. Compared with related works, our solution presents competitive time-saving and coding efficiency results.
+
+## Proposed Solution
+
+The proposed solution uses a **Decision Tree** to predict which ISP modes are more likely to be selected as optimal during the VVC intra-mode decision process.
+
+By avoiding the RDO evaluation of less promising ISP modes, the proposed approach reduces the computational complexity of the ISP mode decision while maintaining coding efficiency.
+
+<p align="center">
+  <img src="figures/solution.png" alt="Overview of the proposed solution" width="850">
+</p>
+
+<p align="center">
+  <em>Overview of the proposed machine-learning-based ISP mode decision solution.</em>
+</p>
+
+## Results
+
+When evaluated under the common test conditions of VVC, the proposed solution achieves:
+
+* **3.15% average time-saving**
+* **0.11% coding efficiency loss**
+
+The proposed solution also avoids the overhead associated with calculating additional image features by using features already available during the encoding process.
+
+For a detailed description of the methodology and experimental results, please refer to the associated publication.
+
+## Software Version
+
+This repository is based on **VTM 18.0**.
+
+For the environment used during development and experimentation, the following configuration is recommended:
+
+* **Operating system:** Ubuntu 20.04
+* **GCC:** 9.4.0
+* **CMake**
+* **GNU Make**
+
+The recommended GCC version is **9.4.0**, which is available in Ubuntu 20.04. Other operating systems, compiler versions, or configurations may work, but they have not been tested with this repository.
+
+## Compilation
+
+Clone this repository and enter its root directory:
+
 ```bash
-git clone https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM.git
-cd VVCSoftware_VTM
+git clone <repository-url>
+cd <repository-directory>
 ```
 
-Build instructions
-==================
-
-The CMake tool is used to create platform-specific build files. 
-
-Although CMake may be able to generate 32-bit binaries, **it is generally suggested to build 64-bit binaries**. 32-bit binaries are not able to access more than 2GB of RAM, which will not be sufficient for coding larger image formats. Building in 32-bit environments is not tested and will not be supported.
-
-
-Build instructions for plain CMake (suggested)
-----------------------------------------------
-
-**Note:** A working CMake installation is required for building the software.
-
-CMake generates configuration files for the compiler environment/development environment on each platform. 
-The following is a list of examples for Windows (MS Visual Studio), macOS (Xcode) and Linux (make).
-
-Open a command prompt on your system and change into the root directory of this project.
-
-Create a build directory in the root directory:
-```bash
-mkdir build 
-```
-
-Use one of the following CMake commands, based on your platform. Feel free to change the commands to satisfy
-your needs.
-
-**Windows Visual Studio 2015/17/19 64 Bit:**
-
-Use the proper generator string for generating Visual Studio files, e.g. for VS 2015:
+Create a build directory:
 
 ```bash
+mkdir build
 cd build
-cmake .. -G "Visual Studio 14 2015 Win64"
 ```
 
-Then open the generated solution file in MS Visual Studio.
-
-For VS 2017 use "Visual Studio 15 2017 Win64", for VS 2019 use "Visual Studio 16 2019".
-
-Visual Studio 2019 also allows you to open the CMake directory directly. Choose "File->Open->CMake" for this option.
-
-**macOS Xcode:**
-
-For generating an Xcode workspace type:
-```bash
-cd build
-cmake .. -G "Xcode"
-```
-Then open the generated work space in Xcode.
-
-For generating Makefiles with optional non-default compilers, use the following commands:
+Configure the project using CMake in Release mode:
 
 ```bash
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9
-```
-In this example the brew installed GCC 9 is used for a release build.
-
-**Linux**
-
-For generating Linux Release Makefile:
-```bash
-cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 ```
-For generating Linux Debug Makefile:
+
+Compile the encoder:
+
 ```bash
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
+make -j6
 ```
 
-Then type
+The `-j6` option instructs `make` to use six parallel compilation processes. If your system has fewer available CPU cores, a smaller value can be used, for example:
+
 ```bash
-make -j
+make -j4
 ```
 
-For more details, refer to the CMake documentation: https://cmake.org/cmake/help/latest/
+or:
 
-Build instructions for make
----------------------------
-
-**Note:** The build instructions in this section require the make tool and Python to be installed, which are
-part of usual Linux and macOS environments. See below for installation instruction for Python and GnuWin32 
-on Windows.
-
-Open a command prompt on your system and change into the root directory of this project.
-
-To use the default system compiler simply call:
 ```bash
-make all
+make -j2
 ```
 
+After compilation, the encoder executable will be available in the `bin` directory.
 
-**MSYS2 and MinGW (Windows)**
+## Video Encoding
 
-**Note:** Build files for MSYS MinGW were added on request. The build platform is not regularily tested and can't be supported. 
+The compiled encoder can be used to encode a YUV video sequence using the VVC intra configuration.
 
-Open an MSYS MinGW 64-Bit terminal and change into the root directory of this project.
+For example, to encode the `RaceHorses` sequence using **QP 22**:
 
-Call:
 ```bash
-make all toolset=gcc
+cd ../bin
+
+./EncoderAppStatic \
+    -c ../cfg/encoder_intra_vtm.cfg \
+    -c ../cfg/per-sequence/RaceHorses.cfg \
+    -q 22 \
+    -i RaceHorses.yuv
 ```
 
-The following tools need to be installed for MSYS2 and MinGW:
+In this example:
 
-Download CMake: http://www.cmake.org/ and install it.
+* `-c ../cfg/encoder_intra_vtm.cfg` specifies the VVC intra coding configuration.
+* `-c ../cfg/per-sequence/RaceHorses.cfg` specifies the configuration for the `RaceHorses` sequence.
+* `-q 22` specifies the **Quantization Parameter (QP)**. In this example, the encoder uses **QP 22**.
+* `-i RaceHorses.yuv` specifies the input YUV video file.
 
-Python and GnuWin32 are not mandatory, but they simplify the build process for the user.
+The input YUV file must be accessible from the location specified by the `-i` argument. For example, if `RaceHorses.yuv` is located inside the `bin` directory, the command above can be used directly.
 
-python:    https://www.python.org/downloads/release/python-371/
+The QP can be changed by modifying the value passed to the `-q` argument. For example:
 
-gnuwin32:  https://sourceforge.net/projects/getgnuwin32/files/getgnuwin32/0.6.30/GetGnuWin32-0.6.3.exe/download
-
-To use MinGW, install MSYS2: http://repo.msys2.org/distrib/msys2-x86_64-latest.exe
-
-Installation instructions: https://www.msys2.org/
-
-Install the needed toolchains:
 ```bash
-pacman -S --needed base-devel mingw-w64-i686-toolchain mingw-w64-x86_64-toolchain git subversion mingw-w64-i686-cmake mingw-w64-x86_64-cmake
+-q 27
 ```
 
+encodes the sequence using QP 27.
+
+## Reproducibility
+
+To reproduce the experiments reported in the associated paper, use **VTM 18.0** together with the recommended software environment described above.
+
+The input video sequences used in the experiments are not included in this repository. They must be obtained separately from their respective publicly available video datasets.
+
+## Citation
+
+If you use this code in your research, please cite the following paper:
+
+```bibtex
+@inproceedings{webmedia,
+    author = {Larissa Araújo and Adson Duarte and Bruno Zatt and Guilherme Correa and Daniel Palomino},
+    title = { Fast ISP Mode Decision for the Versatile Video Coding Intra Prediction Using Machine Learning},
+    booktitle = {Proceedings of the 30th Brazilian Symposium on Multimedia and the Web},
+    location = {Juiz de Fora/MG},
+    year = {2024},
+    keywords = {},
+    issn = {0000-0000},
+    pages = {162--170},
+    publisher = {SBC},
+    address = {Porto Alegre, RS, Brasil},
+    doi = {10.5753/webmedia.2024.241692},
+    url = {https://sol.sbc.org.br/index.php/webmedia/article/view/30309}
+}
+
+```
+
+## License
+
+This repository contains modifications to the VVC Test Model (VTM). Please refer to the original VTM license and licensing terms applicable to the source code included in this repository.
